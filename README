@@ -1,0 +1,24 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1321
+
+CSVTK Provides functions and mappings to help working with CSV files or
+any files where a separator (e.g. a comma) is used between values and
+where values can be enclosed between delimiters (e.g. double quotes).
+Separators characters inside delimiters are not considered as separators.
+
+Field numberting starts at 1.
+
+Mappings allow user to:
+  * Jump to a specific field,
+  * Display the field number of the field under the cursor,
+  * Return the value of field (given the field number) on current line or
+  specified line,
+  * Toggle highlighting for each field (in one or several colors).
+
+The highlight will show in the current line and be updated when user 
+changes line (the highlight is updated thanks to an autocomand on the 
+CursorHold event, therefore it is not updated when in insert mode). The 
+separator following the field is highlighted as part of the field.
+
+Also, a few examples are provided to show how to display the current field
+number in the status line (so you always know what field you're in) and
+how to fold lines depending on field content.
