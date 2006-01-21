@@ -1,20 +1,22 @@
 " CSVTK: a Comma Separated Values Tool Kit
-" Version: 1.0
-" Date: 7/30/2005
+" Version: 1.1
+" Date: 1/21/2006
 " Description:
 "   CSVTK Provides functions and mappings to help working with CSV files or
 "   any files where a separator (e.g. a comma) is used between values and
 "   where values can be enclosed between delimiters (e.g. double quotes).
 "   Separators characters inside delimiters are not considered as separators.
 
-"   Field numberting starts at 1.
+"   Field numbering starts at 1.
 
 "   Mappings allow user to:
+"     * Jump between highlighted fields,
 "     * Jump to a specific field,
 "     * Display the field number of the field under the cursor,
 "     * Return the value of field (given the field number) on current line or
 "     specified line,
-"     * Toggle highlighting for each field (in one or several colors).
+"     * Toggle highlighting for each field (in one or several colors)
+"     * jump between highlighted fields
 "
 "   The highlight will show in the current line and be updated when user 
 "   changes line (the highlight is updated thanks to an autocomand on the 
@@ -43,7 +45,8 @@
 "   See end of the file for mappings already defined and examples.
 "
 " Required_plugins:
-"   multvals.vim v3.10, from Hari Krishna Dara (script #171)
+"   multvals.vim v3.10, from Hari Krishna Dara
+"   genUtils.vim v1.18.3 from Hari Krishna Dara
 " 
 " Optional_plugins:
 "   I recommend MultipleSearch (script #479) from Dan Sharp (not to be 
@@ -63,7 +66,7 @@ let g:CSV_string_delimiter = "\""
 let g:CSV_field_list = ''
 " The list of fields to highlight, initially empty
 
-let g:CSV_mono = 1
+let g:CSV_mono = 0
 " Indicates whether or not to use a different color for each highlighted field
 "   when 1, use single color highlight -- does not require the multipleSearch plugin
 "   when 0, use multi color highlight -- requires the multipleSearch plugin   
@@ -105,6 +108,13 @@ function CSV_goto_field(...)
   endif
   call cursor(0, CSV_field_start(need_field))
 endfunction "}}}
+
+function CSV_goto_highlighted(direction)
+" Put cursor at begining of the next highlighted field in the given direction {{{
+  let temp_field_list = MvQSortElements(g:CSV_field_list , ',', 'CmpByNumber', a:direction)
+  let next_field = MvElementAt(temp_field_list, ',', (MvIndexOfElement(temp_field_list, ',', CSV_get_field(0)) + 1) % MvNumberOfElements(temp_field_list, ','))
+  call cursor(0, CSV_field_start(next_field))
+endfunction "}}} 
 
 function CSV_get_field(verbose)
 " Display (if verbose) or just return field number of field under cursor {{{
@@ -270,6 +280,12 @@ map <C-F6> :call CSV_get_new_sep()<CR>
 
 " Jump to a specific field (enter field at prompt)
 map <C-F5> :call CSV_goto_field()<CR>
+
+" Jump to the next highlighted field
+map <S-F6> :call CSV_goto_highlighted(1)<CR>
+
+" Jump to the previous  highlighted field
+map <S-F5> :call CSV_goto_highlighted(-1)<CR>
 
 " Toggle current field highlighting
 map <S-F3> :call CSV_toggle_field(CSV_get_field(0))<CR>
